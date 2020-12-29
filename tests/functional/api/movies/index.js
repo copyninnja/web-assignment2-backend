@@ -15,13 +15,8 @@ const falseId = 12345
 describe("Movies endpoint", function () {
 
   this.timeout(5000);
-  before((done) => {
-    setTimeout(() => {
-      done()
-    }, 3000);
-  })
 
-  beforeEach((done) => {
+  before((done) => {
 
     request(api)
       .post("/api/users")
@@ -31,7 +26,9 @@ describe("Movies endpoint", function () {
       })
       .expect(200)
       .end((err, res) => {
-        done();
+        setTimeout(() => {
+          done()
+        }, 2000);
       });
 
   });

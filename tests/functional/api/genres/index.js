@@ -7,16 +7,15 @@ dotenv.config();
 
 const expect = chai.expect;
 
-describe("Genres endpoint", function (done) {
-  this.timeout(3000);
+describe("Genres endpoint", function () {
+  this.timeout(5000);
   before((done) => {
     setTimeout(() => {
       done()
-    }, 1000);
+    }, 3000);
   });
 
   after((done) => {
-
     delete require.cache[require.resolve("../../../../index")];
     done();
   });

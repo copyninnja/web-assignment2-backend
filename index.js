@@ -39,12 +39,6 @@ const errorNotification= (err, str, req)=> {
 }
 
 
-if (process.env.SEED_DB) {
-  loadUsers();
-  loadMovies();
-  loadRatings();
-  loadReviews();
-}
 
 const app = express();
 // initialise passport​
@@ -83,5 +77,12 @@ app.use('/api/movies', passport.authenticate('jwt', {session: false}), moviesRou
 app.use('/api/rating', ratingRouter);
 
 app.use('/api/reviews', reviewRouter);
+
+if (process.env.SEED_DB) {
+  loadUsers();
+  loadMovies();
+  loadRatings();
+  loadReviews();
+}
 
 module.exports = app
