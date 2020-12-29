@@ -29,7 +29,8 @@ describe("Movies endpoint",  function() {
         .send({
           "username": "user1",
           "password": "test1"
-        })
+        }).then((res)=>
+        process.env.TOKEN=process.env.BEAR_TOKEN)
     } catch (err) {
       console.error(`failed to Load user Data: ${err}`);
     }

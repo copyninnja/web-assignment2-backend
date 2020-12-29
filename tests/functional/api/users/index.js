@@ -1,6 +1,8 @@
 import chai from "chai";
 import request from "supertest";
 import dotenv from 'dotenv';
+import {loadUsers, loadMovies,loadRatings,loadReviews} from '../../../../seedData';
+
 let api;
 dotenv.config();
 
