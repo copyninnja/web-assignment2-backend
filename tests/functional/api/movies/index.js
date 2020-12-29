@@ -21,7 +21,7 @@ describe("Movies endpoint", function () {
     }, 3000);
   })
 
-  before((done) => {
+  beforeEach((done) => {
 
     request(api)
       .post("/api/users")
@@ -92,7 +92,6 @@ describe("Movies endpoint", function () {
   })
 
   describe("POST /movies/:ID/rating ", () => {
-
     it("should response 401 when asking nonexiting movie", (done) => {
       request(api)
         .post(`/api/movies/${falseId}/rating`)
