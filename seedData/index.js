@@ -8,9 +8,12 @@ import {
 import {
   reviews
 } from './review';
+import {
+  ratings
+} from './rating';
 const users = [{
     'username': 'user1',
-    'password': 'test1',
+    'password': 'test1'
   },
   {
     'username': 'user2',
@@ -19,7 +22,7 @@ const users = [{
 ];
 
 // deletes all user documents in collection and inserts test data
-export async function loadUsers() { 
+export async function loadUsers() {
   console.log('load user Data');
   try {
     await userModel.deleteMany();
@@ -45,6 +48,15 @@ export async function loadRatings() {
   console.log('load rating data');
   try {
     await ratingModel.deleteMany();
+    await ratingModel.collection.insertMany(ratings);
+    const user = await userModel.findByUserName(ratings[0].username);
+    const movie = await movieModel.findByMovieDBId(ratings[0].movieId);
+    user.ratings.push(ratings[0]._id);
+    movie.ratings.push(ratings[0]._id);
+    user.save();
+    movie.save();
+    console.info(`${ratings.length} ratings were successfully stored.`);
+
   } catch (err) {
     console.error(`failed to Load rating Data: ${err}`);
   }
@@ -53,16 +65,16 @@ export async function loadRatings() {
 export async function loadReviews() {
   console.log('load review data');
   try {
-    await reviewModel.deleteMany();  
+    await reviewModel.deleteMany();
     await reviewModel.collection.insertMany(reviews);
     const review = await reviewModel.findByReviewId(577922);
     const movie = await movieModel.findByMovieDBId(577922);
     // console.log(review[0]._id);
-    const addReview=review.map((rev)=>
-     movie.reviews.push(rev._id)
-    );  
+    const addReview = review.map((rev) =>
+      movie.reviews.push(rev._id)
+    );
     movie.save();
-    // console.log(movie.reviews);
+    console.info(`${review.length} reviews were successfully stored.`);
   } catch (err) {
     console.error(`failed to Load review Data: ${err}`);
   }

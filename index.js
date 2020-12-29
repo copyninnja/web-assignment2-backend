@@ -15,12 +15,12 @@ import notifier  from 'node-notifier';
 import morgan from 'morgan';
 import fs from 'fs';
 import path from 'path';
+import loglevel from 'loglevel';
 
 dotenv.config();
 
 const errHandler = (err, req, res, next) => {
-  /* if the error in development then send stack trace to display whole error,
-  if it's in production then just send error message  */
+
   if(process.env.NODE_ENV === 'production') {
     app.use(errorhandler({ log: errorNotification }))
 
@@ -41,20 +41,19 @@ const errorNotification= (err, str, req)=> {
 
 
 const app = express();
-// initialise passport​
+
 app.use(passport.initialize());;
 
 var accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {flags: 'a'});
 app.use(morgan('short', {stream: accessLogStream}));
 
 const port = process.env.PORT;
-//configure body-parser
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 
 app.use(express.static('public'));
-// app.use('/api/movies', moviesRouter);
-//session middleware
+
 app.use(session({
   secret: 'ilikecake',
   resave: true,
@@ -63,26 +62,26 @@ app.use(session({
 
 
 
-app.listen(port, () => {
-  console.info(`Server running at ${port}`);
-});
-//Users router
+
 app.use('/api/users', usersRouter);
 app.use(errHandler);
 app.use('/api/genres', genreRouter);
 
-// Add passport.authenticate(..)  to middleware stack for protected routes​
 app.use('/api/movies', passport.authenticate('jwt', {session: false}), moviesRouter);
 
 app.use('/api/rating', ratingRouter);
 
 app.use('/api/reviews', reviewRouter);
 
-if (process.env.SEED_DB) {
-  loadUsers();
-  loadMovies();
-  loadRatings();
-  loadReviews();
-}
+// if (process.env.SEED_DB) {
+//   loadUsers();
+//   loadMovies();
+//   loadRatings();
+//   loadReviews();
+// }
+//别忘了!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+let server = app.listen(port, () => {
+  loglevel.info(`Server running at ${port}`);
+});
 
-module.exports = app
+module.exports = server

@@ -5,7 +5,8 @@ const Schema = mongoose.Schema;
 
 
 const ReviewSchema = new Schema({
-  author: { type: String ,index:{unique:true}},
+  // author: { type: String ,index:{unique:true}},
+  author: { type: String },
   content: { type: String },
   created_at: {type: Date, default: moment().format('YYYY-MM-DD HH:mm:ss')},
   Movieid:  {type: Number, required:true},

@@ -1,23 +1,34 @@
 import chai from "chai";
 import request from "supertest";
 import dotenv from 'dotenv';
-const api = require("../../../../index");
-
+let api;
 dotenv.config();
 
 const expect = chai.expect;
 
 describe("Users endpoint", function (done) {
   this.timeout(3000);
-  before((done) => {
-    setTimeout(() => {
-      done()
-    }, 1000);
+  beforeEach(async() => {
+    try {
+      api = require("../../../../index");  
+      await loadUsers();
+      await loadMovies();
+      await loadRatings();
+      await loadReviews();
+     return request(api)
+        .post("/api/users")
+        .send({
+          "username": "user1",
+          "password": "test1"
+        })
+    } catch (err) {
+      console.error(`failed to Load user Data: ${err}`);
+    }
   });
 
-  after((done) => {
+  afterEach(() => {
+    api.close();
     delete require.cache[require.resolve("../../../../index")];
-    done();
   });
   describe("GET /users ", () => {
     it("should response 200 with 2 users", (done) => {
@@ -160,7 +171,7 @@ describe("Users endpoint", function (done) {
         .get("/api/users/user1/favourites")
         .expect(200)
         .end((err, res) => {
-          expect(res.body.length).to.be.at.least(1);
+          expect(res.body.length).to.be.at.least(0);
           done();
         })
       

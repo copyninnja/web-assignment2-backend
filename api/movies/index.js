@@ -9,12 +9,17 @@ import jwt from 'jsonwebtoken';
 const router = express.Router();
 
 router.get('/', (req, res, next) => {
-  movieModel.find().then(movies => res.status(200).send(movies)).catch(next);
+  try{
+  movieModel.find().then(movies => res.status(200).send(movies))}
+catch(next){
+  next();
+}
 });
 
 router.get('/:id', async (req, res, next) => {
+  try{
   const id = parseInt(req.params.id);
-  const movie = await movieModel.findByMovieDBId(id).catch(next);
+  const movie = await movieModel.findByMovieDBId(id);
   if (!movie) return res.status(401).json({
     code: 401,
     msg: 'failed. movie not found.'
@@ -22,6 +27,10 @@ router.get('/:id', async (req, res, next) => {
   else {
     res.status(200).send(movie)
   }
+}
+catch(next){
+  next()
+}
 });
 
 
@@ -53,6 +62,7 @@ router.post('/:id/rating', async (req, res, next) => {
     res.status(201).json("successfully add rating");
   } catch (next) {
     next();
+    console.error(next);
   }
 
 });
@@ -62,11 +72,13 @@ router.delete('/:id/rating', async (req, res, next) => {
   const userName = jwt.verify(process.env.TOKEN, process.env.SECRET);
   const newRating = req.params.id;
   const movie = await movieModel.findByMovieDBId(newRating);
+  // console.log(movie)
   if (!movie) return res.status(401).json({
     code: 401,
     msg: 'failed. movie not found.'
   });
-  // console.log(token);
+  
+  // console.error(token);
   const user = await User.findByUserName(userName);
   const ratingId = await User.findByRatedId(movie._id);
   if (ratingId) {
@@ -77,9 +89,10 @@ router.delete('/:id/rating', async (req, res, next) => {
     });
     await user.save();
   }
-  res.status(201).json("successfully delete");}
+  res.status(201).json("successfully delete");
+}
   catch(next){
-    next();
+    console.error(next);
   }
 });
 
@@ -106,7 +119,7 @@ router.put('/:id/rating', async (req, res, next) => {
   res.status(201).json("success");
 }
 catch(next){
-  next();
+  next(next);
 }
 })
 
@@ -114,7 +127,7 @@ router.get('/:id/reviews', async (req, res, next) => {
   try{
   const id = parseInt(req.params.id);
   const movie = await movieModel.findByMovieDBId(id);
-  // console.log(movie.reviews);
+  // console.error(movie.reviews);
   // const movie = await movieModel.findByMovieDBId(id);
   movieModel.findByMovieDBId(id).populate('reviews').then(
     movie => res.status(201).json(movie.reviews)
@@ -142,7 +155,6 @@ try{
     "content": content
   });
   const reviewing = await Review.findByName(author);
-  // console.log(reviewing);
   await user.reviews.push(reviewing._id);
   await movie.reviews.push(reviewing._id);
   await user.save();
@@ -150,8 +162,7 @@ try{
 
   res.status(201).json("successfully add reviewing");
 }catch(next){
-  next();
-}
+console.error(next)}
 });
 
 router.delete('/:id/reviews', async (req, res, next) => {
@@ -163,7 +174,7 @@ router.delete('/:id/reviews', async (req, res, next) => {
     code: 401,
     msg: 'failed. movie not found.'
   });
-  // console.log(token);
+  // console.error(token);
   const user = await User.findByUserName(userName);
   const reviewing = await Review.findByName(userName);
   if (reviewing) {
@@ -176,8 +187,7 @@ router.delete('/:id/reviews', async (req, res, next) => {
   }
   res.status(201).json("successfully delete");
 }catch(next){
-  next();
-}
+console.error(next)}
 });
 
 router.put('/:id/reviews', async (req, res, next) => {
@@ -202,8 +212,7 @@ router.put('/:id/reviews', async (req, res, next) => {
   }
   res.status(201).json("success");
 }catch(next){
-  next();
-}
+console.error(next)}
 })
 
 export default router;

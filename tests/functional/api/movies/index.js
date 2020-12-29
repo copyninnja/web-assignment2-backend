@@ -1,41 +1,48 @@
 import chai from "chai";
 import request from "supertest";
 import dotenv from 'dotenv';
+import {loadUsers, loadMovies,loadRatings,loadReviews} from '../../../../seedData';
 
-// import api from "../../../../index"; // Express API application 
-const api = require("../../../../index");
+// import api from '../../../../index';
 dotenv.config();
 
 const expect = chai.expect;
 const token = process.env.BEAR_TOKEN;
-const id = 577922
-const falseId = 12345
+const id = 577922;
+const falseId = 12345;
+const defaultId = 581392;
+let api;
 
-
-describe("Movies endpoint", function () {
+describe("Movies endpoint",  function() {
 
   this.timeout(5000);
 
-  before((done) => {
-
-    request(api)
-      .post("/api/users")
-      .send({
-        "username": "user1",
-        "password": "test1"
-      })
-      .expect(200)
-      .end((err, res) => {
-        setTimeout(() => {
-          done()
-        }, 2000);
-      });
-
+  beforeEach(async() => {
+    try {
+      api = require("../../../../index");  
+      await loadUsers();
+      await loadMovies();
+      await loadRatings();
+      await loadReviews();
+     return request(api)
+        .post("/api/users")
+        .send({
+          "username": "user1",
+          "password": "test1"
+        })
+    } catch (err) {
+      console.error(`failed to Load user Data: ${err}`);
+    }
   });
-  after((done) => {
+
+  afterEach(() => {
+    api.close();
     delete require.cache[require.resolve("../../../../index")];
-    done();
   });
+  // after((done) => {
+  //   delete require.cache[require.resolve("../../../../index")];
+  //   done();
+  // });
 
   describe("GET /movies ", () => {
     it("should response 401 without authentication", (done) => {
@@ -89,7 +96,7 @@ describe("Movies endpoint", function () {
   })
 
   describe("POST /movies/:ID/rating ", () => {
-    it("should response 401 when asking nonexiting movie", (done) => {
+    it("should response 401 when asking nonexiting movie",  (done) => {     
       request(api)
         .post(`/api/movies/${falseId}/rating`)
         .set({
@@ -100,14 +107,15 @@ describe("Movies endpoint", function () {
         })
         .expect(401)
         .end((err, res) => {
-          if (err) return done(err);
           expect(res.body.msg).to.equal('failed. movie not found.');
           done();
         });
-    });
-    it("should create a rating", (done) => {
+
+      })
+ 
+    it("should create a rating",  (done) => {
       request(api)
-        .post(`/api/movies/${id}/rating`)
+        .post(`/api/movies/${defaultId}/rating`)
         .set({
           "Authorization": `Bearer ${token}`
         })
@@ -116,7 +124,6 @@ describe("Movies endpoint", function () {
         })
         .expect(201)
         .end((err, res) => {
-          if (err) return done(err);
           expect(res.body).to.equal('successfully add rating');
           done();
         });
@@ -124,9 +131,9 @@ describe("Movies endpoint", function () {
   })
   describe("PUT /movies/:ID/rating ", () => {
     let rate = 2
-    it("should return a 200 status and the copy of the updated rating", () => {
-      return request(api)
-        .put(`/api/movies/${id}/rating`)
+    it("should return a 200 status and the copy of the updated rating", (done) => {
+       request(api)
+        .put(`/api/movies/${defaultId}/rating`)
         .set({
           "Authorization": `Bearer ${token}`
         })
@@ -134,49 +141,52 @@ describe("Movies endpoint", function () {
           "ratedScore": rate
         })
         .expect(201)
-        .then((res) => {
+        .end((err, res) => {
           expect(res.body).equals("success");
+          done();
         });
+
     });
 
-    it("should return a 401 status by false id of movie", () => {
-      return request(api)
+    it("should return a 401 status by false id of movie", (done) => {
+       request(api)
         .put(`/api/movies/${falseId}/rating`)
         .set({
           "Authorization": `Bearer ${token}`
         })
         .expect(401)
-        .expect({
-          msg: 'failed. movie not found.',
-          code: 401
+        .end((err,res)=>{
+          expect(res.body.msg).equals('failed. movie not found.');
+          done();
         });
     });
   })
 
   describe("DELETE /movies/:ID/rating ", () => {
 
-    it("should return a 200 status and the copy of the updated rating", () => {
-      return request(api)
-        .delete(`/api/movies/${id}/rating`)
+    it("should return a 200 status and the copy of the updated rating", (done) => {
+       request(api)
+        .delete(`/api/movies/${defaultId}/rating`)
         .set({
           "Authorization": `Bearer ${token}`
         })
         .expect(201)
-        .then((res) => {
+        .end((err,res) => {
           expect(res.body).equals("successfully delete");
+          done()
         });
     });
 
-    it("should return a 401 status by false id of movie", () => {
-      return request(api)
+    it("should return a 401 status by false id of movie", (done) => {
+       request(api)
         .put(`/api/movies/${falseId}/rating`)
         .set({
           "Authorization": `Bearer ${token}`
         })
         .expect(401)
-        .expect({
-          msg: 'failed. movie not found.',
-          code: 401
+        .end((err,res)=>{
+          expect(res.body.msg).equals('failed. movie not found.');
+          done()
         });
     });
 
@@ -184,7 +194,7 @@ describe("Movies endpoint", function () {
   describe("POST /movies/:ID/reviews ", () => {
     it("should return a 200 status and the copy of the review", (done) => {
       request(api)
-        .post(`/api/movies/${id}/reviews`)
+        .post(`/api/movies/${defaultId}/reviews`)
         .set({
           "Authorization": `Bearer ${token}`
         })
@@ -229,7 +239,7 @@ describe("Movies endpoint", function () {
         .end((err, res) => {
           expect(res.body.length).to.be.at.least(9);
           const result = res.body.filter(re => re.author === "user1");
-          expect(result[0].content).to.equals("this is a bad movie")
+          expect(result[0].content).to.equals("this is a good movie")
           done();
         });
     });
@@ -244,7 +254,6 @@ describe("Movies endpoint", function () {
         .expect(201)
         .end((err, res) => {
           expect(res.body).to.be.equals("successfully delete");
-
           done();
         });
     });
@@ -252,6 +261,6 @@ describe("Movies endpoint", function () {
 
 
 
+});
 
 
-})

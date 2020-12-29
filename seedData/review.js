@@ -64,5 +64,14 @@ export const reviews = [
         "Movieid": 577922,
         "updated_at": "2020-12-08T16:45:18.202Z",
         "url": "https://www.themoviedb.org/review/5fcefc91c0348b0040131b1e"
+    },
+    {
+        "author": "user1",
+        "content": "this is a good movie",
+        "created_at": "2020-12-08T04:09:53.653Z",
+        "Movieid": 577922,
+        "updated_at": "2020-12-08T16:45:18.202Z",
+        "url": "https://www.themoviedb.org/review/5fcefc91c0348b0040131b1e"
     }
+
 ]
