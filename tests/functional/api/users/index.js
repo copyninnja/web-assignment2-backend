@@ -15,7 +15,7 @@ describe("Users endpoint", function (done) {
       await loadMovies();
       await loadRatings();
       await loadReviews();
-     return request(api)
+     await request(api)
         .post("/api/users")
         .send({
           "username": "user1",

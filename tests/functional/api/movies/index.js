@@ -24,7 +24,7 @@ describe("Movies endpoint",  function() {
       await loadMovies();
       await loadRatings();
       await loadReviews();
-     return request(api)
+     await request(api)
         .post("/api/users")
         .send({
           "username": "user1",
@@ -39,10 +39,7 @@ describe("Movies endpoint",  function() {
     api.close();
     delete require.cache[require.resolve("../../../../index")];
   });
-  // after((done) => {
-  //   delete require.cache[require.resolve("../../../../index")];
-  //   done();
-  // });
+
 
   describe("GET /movies ", () => {
     it("should response 401 without authentication", (done) => {
