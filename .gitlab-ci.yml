@@ -48,7 +48,7 @@ staging:
   stage: staging
   environment:
     name: production
-    url: localhost:8080
+    url: unruffled-jackson-964513.netlify.app
   only:
     - develop
   script:
