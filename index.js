@@ -18,6 +18,7 @@ import path from 'path';
 import loglevel from 'loglevel';
 
 dotenv.config();
+const app = express();
 
 const errHandler = (err, req, res, next) => {
 
@@ -27,7 +28,14 @@ const errHandler = (err, req, res, next) => {
     return res.status(500).send(`Something went wrong!`);
   }
   res.status(500).send(`Hey!! You caught the error 👍👍, ${err.stack} `);
-};
+}; 
+
+  if (process.env.NODE_ENV === 'test') {
+    loglevel.setLevel('warn')
+  } else {
+    loglevel.setLevel('info')
+  }
+
 
 const errorNotification= (err, str, req)=> {
   var title = 'Error in ' + req.method + ' ' + req.url
@@ -38,9 +46,24 @@ const errorNotification= (err, str, req)=> {
   })
 }
 
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
+const options = {
+  swaggerDefinition: {
+    // 這邊會是你的api文件網頁描述
+    info: {
+      title: 'Assign2 API',
+      version: '1.0.0',
+      description: 'Generate API document with swagger'
+    }
+  },
+  // 這邊會是你想要產生的api文件檔案，我是直接讓swagger去列出所有controllers
+  apis: ['./api/**/index.js']
+};
+const specs = swaggerJsdoc(options);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 
-const app = express();
 
 app.use(passport.initialize());;
 
@@ -73,12 +96,12 @@ app.use('/api/rating', ratingRouter);
 
 app.use('/api/reviews', reviewRouter);
 
-// if (process.env.SEED_DB) {
-//   loadUsers();
-//   loadMovies();
-//   loadRatings();
-//   loadReviews();
-// }
+if (process.env.SEED_DB && (process.env.NODE_ENV=='development')) {
+  loadUsers();
+  loadMovies();
+  loadRatings();
+  loadReviews();
+}
 //别忘了!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
 let server = app.listen(port, () => {
   loglevel.info(`Server running at ${port}`);

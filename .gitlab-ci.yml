@@ -5,6 +5,8 @@ variables:
    npm_config_cache: "$CI_PROJECT_DIR/.npm"
    NODE_ENV: 'test'
 
+
+
 cache:
    key:
      files:
@@ -20,6 +22,7 @@ stages:
   - install
   - build
   - test
+  -staging
 
 # Jobs:
 
@@ -39,3 +42,19 @@ test_api:
   stage: test
   script:
     - npm test
+
+stages:
+  - deploy
+
+staging:
+  stage: staging
+  environment:
+    name: production
+    url: localhost:8080
+  only:
+    - develop
+  script:
+    - npm i
+    # your build command
+    - npm run build
+    - npx netlify-cli deploy --site $NETLIFY_SITE_ID --auth $NETLIFY_AUTH_TOKEN --prod
