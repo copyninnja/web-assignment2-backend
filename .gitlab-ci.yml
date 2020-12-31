@@ -22,7 +22,7 @@ stages:
   - install
   - build
   - test
-  -staging
+  - staging
 
 # Jobs:
 
@@ -43,8 +43,6 @@ test_api:
   script:
     - npm test
 
-stages:
-  - deploy
 
 staging:
   stage: staging
