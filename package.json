@@ -4,19 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "npm-run-all clean compile:all",
-    "clean": "rimraf ./build && mkdir build",
-    "compile:moviemodels": "babel ./api/movies --out-dir build/api/movies",
-    "compile:usermodels": "babel ./api/users --out-dir build/api/users",
-    "compile:models": "npm-run-all compile:moviemodels compile:usermodels",
-    "compile:seed": "babel ./seedData --out-dir build/seedData",
-    "compile:routes": "babel ./routes --out-dir build/routes ",
-    "compile:app": "babel index.js --out-dir build/",
-    "compile:db": "babel db.js --out-dir build/",
-    "compile:copy": "cp -r ./node_modules/ build/node_modules && cp -r ./public build/public",
-    "compile:all": "npm-run-all compile:models compile:seed compile:app compile:db compile:copy",
-    "postinstall": "rimraf ./build && npm run compile:all",
-    "start": "nodemon --exec babel-node index.js",
+    "build": "./node_modules/.bin/netlify-lambda build src",
+    "start": "./node_modules/.bin/netlify-lambda serve src",
     "test": "cross-env NODE_ENV=test mocha "
   },
   "author": "XiaoFeng Gong",
@@ -41,6 +30,7 @@
     "swagger-ui-express": "^4.1.6"
   },
   "dependencies": {
+    "@babel/runtime": "^7.6.3",
     "bcrypt-nodejs": "0.0.3",
     "cross-env": "^7.0.3",
     "dotenv": "^8.2.0",
@@ -48,17 +38,18 @@
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "jsonwebtoken": "^8.5.1",
+    "loglevel": "^1.7.1",
     "moment": "^2.29.1",
     "mongoose": "^5.11.1",
     "morgan": "^1.10.0",
+    "netlify-lambda": "^2.0.2",
     "node-fetch": "^2.6.1",
     "node-notifier": "^9.0.0",
     "nodemailer": "^6.4.17",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
-    "xoauth2": "^1.2.0",
     "rimraf": "^3.0.0",
-    "loglevel": "^1.7.1",
-    "@babel/runtime": "^7.6.3"
+    "serverless-http": "^2.6.0",
+    "xoauth2": "^1.2.0"
   }
 }
