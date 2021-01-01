@@ -122,10 +122,22 @@ router.get('/:userName/favourites', (req, res, next) => {
 });
 
 router.get('/:userName/ratings', (req, res, next) => {
+  const isEnabled = req.optimizely.client.isFeatureEnabled(
+    'Assignment2',       // Feature key connecting feature to UI
+    '',           // String ID used for random percentage-based rollout
+    {
+      username: req.params.userName   // Attributes used for targeted audience-based rollout
+    }
+  );if(isEnabled){
   const userName = req.params.userName;
   User.findByUserName(userName).populate('ratings').then(
     user => res.status(201).json(user.ratings)
-  ).catch(next);
+  ).catch(next);}
+  else{
+    res.send({
+      "success" : "feature off"
+    })
+  }
 });
 
 router.get('/:userName/reviews', (req, res, next) => {

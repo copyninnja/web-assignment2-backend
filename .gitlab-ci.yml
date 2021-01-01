@@ -23,6 +23,8 @@ stages:
   - build
   - test
   - staging
+  - delivery
+  - deployment
 
 # Jobs:
 
@@ -49,10 +51,27 @@ staging:
   environment:
     name: production
     url: unruffled-jackson-964513.netlify.app
+  script:
+    - npm install
+    - npm run build
+  
+delivery:
+  stage: delivery
+  environment:
+    name: production
+    url: unruffled-jackson-964513.netlify.app
   only:
     - develop
   script:
-    - npm install
-    # your build command
-    - npm run build
+    - npx netlify-cli deploy --site $NETLIFY_SITE_ID --auth $NETLIFY_AUTH_TOKEN --prod
+  when : manual
+
+deployment:
+  stage: deployment
+  environment:
+    name: production
+    url: unruffled-jackson-964513.netlify.app
+  only:
+    - master
+  script:
     - npx netlify-cli deploy --site $NETLIFY_SITE_ID --auth $NETLIFY_AUTH_TOKEN --prod

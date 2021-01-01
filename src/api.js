@@ -16,9 +16,23 @@ import moviesRouter from '../api/movies';
 import genreRouter from  '../api/genres';
 import ratingRouter from "../api/rating";
 import reviewRouter from '../api/reviews';
+
+import optimizelyExpress from '@optimizely/express';
+
+const optimizely = optimizelyExpress.initialize({
+    sdkKey: 'UjThNxuk5yt5MgWiNYWQ7',
+    datafileOptions: {
+      autoUpdate: true,      // Indicates feature flags will be auto-updated based on UI changes 
+      updateInterval: 1*1000 // 1 second in milliseconds
+    },
+    logLevel: 'info',        // Controls console logging. Can be 'debug', 'info', 'warn', or 'error'
+  });
+  
 dotenv.config();
 
 const app = express();
+app.use(optimizely.middleware);
+
 const router = express.Router();
 
 if (process.env.NODE_ENV === 'test') {
@@ -57,13 +71,22 @@ app.use('/.netlify/functions/api/reviews', reviewRouter);
 
 
 router.get("/", (req, res) => {
+    const isEnabled = req.optimizely.client.isFeatureEnabled(
+        'Assignment2',       // Feature key connecting feature to UI
+        '',           // String ID used for random percentage-based rollout
+        {
+          customerId: 123,   // Attributes used for targeted audience-based rollout
+          isVip: true,
+        }
+      );
 
     res.send({
-        "hello": "hi"
+        "hello": `${isEnabled ?"user" :"feature off"} `
     })
 
 })
 
 app.use("/.netlify/functions/api", router);
+
 
 exports.handler = serverless(app);
