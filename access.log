@@ -50,3 +50,8 @@
 ::ffff:127.0.0.1 - POST /api/users/user1/favourites HTTP/1.1 201 229 - 67.560 ms
 ::ffff:127.0.0.1 - POST /api/users HTTP/1.1 200 106 - 205.032 ms
 ::ffff:127.0.0.1 - GET /api/users/user1/favourites HTTP/1.1 201 2 - 16.897 ms
+::ffff:127.0.0.1 - POST /api/users HTTP/1.1 200 106 - 218.584 ms
+::ffff:127.0.0.1 - GET /api/genres HTTP/1.1 200 536 - 83.850 ms
+::ffff:127.0.0.1 - POST /api/users HTTP/1.1 200 106 - 207.844 ms
+::ffff:127.0.0.1 - GET /api/movies HTTP/1.1 401 - - 3.685 ms
+::ffff:127.0.0.1 - POST /api/users HTTP/1.1 200 106 - 208.535 ms
