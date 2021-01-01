@@ -16,7 +16,6 @@ import moviesRouter from '../api/movies';
 import genreRouter from  '../api/genres';
 import ratingRouter from "../api/rating";
 import reviewRouter from '../api/reviews';
-
 dotenv.config();
 
 const app = express();

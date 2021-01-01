@@ -55,3 +55,5 @@
 ::ffff:127.0.0.1 - POST /api/users HTTP/1.1 200 106 - 207.844 ms
 ::ffff:127.0.0.1 - GET /api/movies HTTP/1.1 401 - - 3.685 ms
 ::ffff:127.0.0.1 - POST /api/users HTTP/1.1 200 106 - 208.535 ms
+::ffff:127.0.0.1 - POST /api/users HTTP/1.1 200 106 - 221.528 ms
+::ffff:127.0.0.1 - GET /api/genres HTTP/1.1 200 536 - 93.150 ms
