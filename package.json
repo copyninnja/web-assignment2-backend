@@ -19,7 +19,8 @@
     "compile:all": "npm-run-all compile:models compile:seed compile:app compile:db compile:copy",
     "postinstall": "rimraf ./build && npm run compile:all",
     "start": "./node_modules/.bin/netlify-lambda serve src",
-    "test": "cross-env NODE_ENV=test mocha "
+    "test": "cross-env NODE_ENV=test mocha ",
+    "docs": "nodemon --exec babel-node index.js"
   },
   "author": "XiaoFeng Gong",
   "license": "ISC",
@@ -65,6 +66,7 @@
     "passport-jwt": "^4.0.0",
     "rimraf": "^3.0.0",
     "serverless-http": "^2.6.0",
-    "xoauth2": "^1.2.0"
+    "xoauth2": "^1.2.0",
+    "yamljs": "^0.3.0"
   }
 }

@@ -17,6 +17,7 @@ import fs from 'fs';
 import path from 'path';
 import loglevel from 'loglevel';
 
+
 dotenv.config();
 const app = express();
 
@@ -48,22 +49,10 @@ const errorNotification= (err, str, req)=> {
 
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
-const options = {
-  swaggerDefinition: {
-    // 這邊會是你的api文件網頁描述
-    info: {
-      title: 'Assign2 API',
-      version: '1.0.0',
-      description: 'Generate API document with swagger'
-    }
-  },
-  // 這邊會是你想要產生的api文件檔案，我是直接讓swagger去列出所有controllers
-  apis: ['./api/**/index.js']
-};
-const specs = swaggerJsdoc(options);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
-
+const YAML = require('yamljs');
+const swaggerDocument = YAML.load('./swagger.yaml');
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use(passport.initialize());;
 
@@ -95,6 +84,9 @@ app.use('/api/movies', passport.authenticate('jwt', {session: false}), moviesRou
 app.use('/api/rating', ratingRouter);
 
 app.use('/api/reviews', reviewRouter);
+
+
+
 
 if (process.env.SEED_DB && (process.env.NODE_ENV=='development')) {
   loadUsers();

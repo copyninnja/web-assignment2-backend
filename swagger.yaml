@@ -1,0 +1,257 @@
+---
+swagger: "2.0"
+info:
+  description: ""
+  version: 1.0.0
+  title: assi
+  contact:
+    email: 20091570@mail.wit.ie
+host: localhost:8080
+basePath: /api
+tags:
+- name: movies
+  description: Everything about Movie
+- name: rating
+  description: Access to movie rating
+- name: review
+  description: Access to movie review
+- name: user
+  description: Operations about user
+- name: genres
+  description: Operations about genres
+schemes:
+- http
+paths:
+  /movies:
+    get:
+      tags:
+      - movies
+      summary: get all movies
+      operationId: getMovie
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        "405":
+          description: Invalid input
+      security:
+      - Bearer: []
+  /genres:
+    get:
+      tags:
+      - genres
+      summary: Find movies' genres
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        "200":
+          description: success
+          schema:
+            type: object
+            example:
+              genres:
+              - id: 28
+                name: Action
+        "401":
+          description: 'Invalid API key: You must be granted a valid key'
+  /users/{username}/favourites:
+    get:
+      tags:
+      - user
+      summary: Finds user's favourite
+      description: Muliple results can be found
+      operationId: findPetsByTags
+      produces:
+      - application/json
+      parameters:
+      - name: username
+        in: path
+        description: username to filter by
+        required: true
+        type: string
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Movie'
+        "400":
+          description: Invalid username value
+    post:
+      tags:
+      - user
+      summary: post one's favourite when click the button
+      description: one at a time
+      parameters:
+      - name: username
+        in: path
+        description: username to filter by
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+        "401":
+          description: Invalid username value
+  /users:
+    get:
+      tags:
+      - user
+      summary: Finds user's favourite
+      description: Muliple results can be found
+      operationId: finduser
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Movie'
+        "400":
+          description: Invalid username value
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+definitions:
+  User:
+    type: object
+    required:
+    - password
+    - username
+    properties:
+      username:
+        type: string
+      password:
+        type: string
+      favourites:
+        type: string
+      ratings:
+        $ref: '#/definitions/Ratings'
+      email:
+        type: string
+      reviews:
+        $ref: '#/definitions/Reviews'
+    xml:
+      name: User
+  Movie:
+    type: object
+    required:
+    - id
+    properties:
+      adult:
+        type: boolean
+      id:
+        type: number
+        format: int64
+      poster_path:
+        type: string
+      overview:
+        type: string
+        example: it's a good one
+      release_date:
+        type: string
+        format: date
+      original_title:
+        type: string
+      genre_ids:
+        type: array
+        items:
+          type: number
+      original_language:
+        type: string
+      title:
+        type: string
+      backdrop_path:
+        type: string
+      popularity:
+        type: number
+      vote_count:
+        type: number
+      video:
+        type: boolean
+      vote_average:
+        type: number
+      production_countries:
+        $ref: '#/definitions/Movie_production_countries'
+      runtime:
+        type: number
+      spoken_languages:
+        $ref: '#/definitions/Movie_spoken_languages'
+      status:
+        type: string
+        description: status in the store
+        enum:
+        - upcoming
+        - down
+      ratings:
+        $ref: '#/definitions/Ratings'
+      reviews:
+        $ref: '#/definitions/Reviews'
+    xml:
+      name: Movie
+  Ratings:
+    type: object
+    required:
+    - movieId
+    - username
+    properties:
+      movieId:
+        type: number
+      username:
+        type: string
+      ratedScore:
+        type: number
+        example: 10.0
+      create_time:
+        type: string
+        format: date
+    xml:
+      name: Ratings
+  Reviews:
+    type: object
+    required:
+    - Movieid
+    properties:
+      author:
+        type: string
+      content:
+        type: string
+      created_at:
+        type: string
+        format: date
+      updated_at:
+        type: string
+        format: date
+      url:
+        type: string
+      Movieid:
+        type: number
+    xml:
+      name: Reviews
+  Movie_production_countries:
+    type: object
+    properties:
+      iso_3166_1:
+        type: string
+      name:
+        type: string
+  Movie_spoken_languages:
+    type: object
+    properties:
+      iso_639_1:
+        type: string
+      name:
+        type: string

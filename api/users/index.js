@@ -4,6 +4,9 @@ import jwt from 'jsonwebtoken';
 import movieModel from '../movies/movieModel';
 import nodemailer from 'nodemailer';
 import xoauth2 from 'xoauth2';
+import multer from 'multer';
+import fs from 'fs';
+
 const router = express.Router(); // eslint-disable-line
 let transporter = nodemailer.createTransport({
   host: 'smtp.163.com',
@@ -145,6 +148,20 @@ router.get('/:userName/reviews', (req, res, next) => {
   User.findByUserName(userName).populate('reviews').then(
     user => res.status(201).json(user.reviews)
   ).catch(next);
+});
+
+var upload = multer({ dest: 'upload/',limits:{fileSize: 1600000}})//1.6mb
+
+router.post('/upload',upload.single('file'),function (req, res, next) {
+  fs.rename(req.file.path, "upload/" + req.file.originalname, function(err) {
+    if (err) {
+        throw err;
+    }
+});
+  res.status(201).json({
+    code: 201,
+    msg: 'Successful upload',
+  });
 });
 
 export default router;
