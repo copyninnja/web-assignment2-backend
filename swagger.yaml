@@ -1,9 +1,9 @@
 ---
 swagger: "2.0"
 info:
-  description: ""
+  description: "RESTful API document"
   version: 1.0.0
-  title: assi
+  title: Assignment2
   contact:
     email: 20091570@mail.wit.ie
 host: localhost:8080
@@ -19,8 +19,8 @@ tags:
   description: Operations about user
 - name: genres
   description: Operations about genres
-schemes:
-- http
+# schemes:
+# - http
 paths:
   /movies:
     get:
@@ -120,11 +120,351 @@ paths:
               $ref: '#/definitions/Movie'
         "400":
           description: Invalid username value
+          
+    post:
+      tags:
+      - user
+      summary: "get authentication/register"
+      description: "post username and password for verification"
+      operationId: "authticate"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "List of user object"
+        required: true
+        schema:
+          type: object
+          example: {username: user1,
+                    password: test1,
+                    mail:  123@qq.com,}
+
+      - name: "action"
+        in: "query"
+        description: "The action for register"
+        type: "string"
+
+      responses:
+        "401":
+          description: "Please pass username and password."
+        "400":
+          description: "Authentication failed. User not found./Wrong password."
+        "200":
+          description: "successful with bear token" 
+          schema:
+            type: object
+            example: {  "success": true,  "token": "BEARER 12344"}
+    
+
+  /movies/{movieId}/rating:
+    post:
+      tags:
+      - movies
+      summary: "create rating of a movie and update user's rating"
+      description: ""
+      operationId: "CreateRating"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+        - in: "path"
+          name: movieId
+          required: true
+          type: number
+        - in: "body"
+          name: "body"
+          description: "rating value"
+          required: true
+          schema:
+            type: object
+            example: {value: 8}
+                    
+      responses:
+        "401":
+          description: "invalid"
+        "201":
+          description: "successfully add rating"
+      security:
+         - Bearer: []
+         
+         
+    delete:
+      tags:
+      - movies
+      summary: "Deletes a pet"
+      description: ""
+      operationId: "deletePet"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+        - in: "path"
+          name: movieId
+          required: true
+          type: number
+      responses:
+        "200":
+          description: "successfully delete  "
+        "401":
+          description: "failed. movie not found."
+      security:
+         - Bearer: []
+    
+    put:
+      tags:
+      - movies
+      summary: "Updates rating of a movie and update user's rating"
+      description: ""
+      operationId: "updateRating"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+        - in: "path"
+          name: movieId
+          required: true
+          type: number
+        - in: "body"
+          name: "body"
+          description: "rating value"
+          required: true
+          schema:
+            type: object
+            example: {value: 4}
+                    
+      responses:
+        "401":
+          description: "failed. movie not found."
+        "201":
+          description: "successfully update rating"
+      security:
+         - Bearer: []
+    
+    
+  /users/{username}/ratings:
+    get:
+      tags: 
+      - user
+      summary: "get rating of a movie rated by user"
+      description: ""
+      operationId: "getRating"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+        - in: "path"
+          name: username
+          required: true
+          type: string
+      responses:
+        "401":
+          description: "failed. movie not found."
+        "201":
+          description: "successfully add rating"
+      security:
+         - Bearer: []
+         
+  /reviews:
+    get:
+      tags:
+      - review
+      summary: "get review of all movies"
+      description: ""
+      operationId: "getReviews"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        "401":
+          description: "failed. "
+        "201":
+          description: "successfully add rating"
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Reviews'
+  
+  /movies/{movieId}/reviews:
+    get:
+      tags:
+      - movies
+      summary: "Updates rating of a movie and update user's rating"
+      description: ""
+      operationId: "getMovieReview"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+        - in: "path"
+          name: movieId
+          required: true
+          type: number
+                    
+      responses:
+        "401":
+          description: "failed. movie not found."
+        "201":
+          description: "successfully update review"
+          schema:
+            items:
+              $ref:  '#/definitions/Reviews'
+      security:
+         - Bearer: []
+      
+      
+    post:
+      tags:
+      - movies
+      summary: "create review of a movie and update user's review"
+      operationId: "createReview"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+        - in: "path"
+          name: movieId
+          required: true
+          type: number
+        - in: "body"
+          name: "body"
+          description: "review content"
+          required: true
+          schema:
+            type: object
+            example: {content: this is a good movie}
+                     
+      responses:
+        "401":
+          description: "failed. movie not found."
+        "201":
+          description: "successfully add reviewing"
+      security:
+         - Bearer: []
+    
+    delete:
+      tags:
+      - movies
+      summary: "delete rating of a movie and update user's rating"
+      description: ""
+      operationId: "deleteReview"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+        - in: "path"
+          name: movieId
+          required: true
+          type: number
+                    
+      responses:
+        "401":
+          description: "failed. movie not found."
+        "201":
+          description: "successfully delete "
+      security:
+         - Bearer: []
+         
+    put:
+      tags:
+      - movies
+      summary: "update review of a movie and update user's review"
+      operationId: "UpdateReview"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+        - in: "path"
+          name: movieId
+          required: true
+          type: number
+        - in: "body"
+          name: "body"
+          description: "review content"
+          required: true
+          schema:
+            type: object
+            example: {content: this is a bad movie}
+                     
+      responses:
+        "401":
+          description: "failed. movie not found."
+        "201":
+          description: "success"
+      security:
+         - Bearer: []
+         
+    
+  /users/upload:
+    post:
+      tags:
+      - user
+      summary: "upload file such as avatar"
+      operationId: "upload"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "file"
+        in: "formData"
+        description: "file to upload"
+        required: true
+        type: "file"
+                     
+      responses:
+        "201":
+          description: "Successful upload"
+    
+    
+  /rating:
+    get:
+      tags:
+      - rating
+      summary: "get ratings rated by all users"
+      description: ""
+      operationId: "getAllRating"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        "401":
+          description: "failed. "
+        "201":
+          description: "successfully get rating"
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Ratings'      
+      
+      
+      
+      
+    
+      
+  
+
+
+          
+          
+          
 securityDefinitions:
   Bearer:
     type: apiKey
     name: Authorization
     in: header
+    
 definitions:
   User:
     type: object
@@ -255,3 +595,8 @@ definitions:
         type: string
       name:
         type: string
+# Added by API Auto Mocking Plugin
+
+schemes:
+ - http
+# Added by API Auto Mocking Plugin
