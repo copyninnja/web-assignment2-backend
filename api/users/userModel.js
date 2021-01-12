@@ -53,6 +53,22 @@ UserSchema.methods.comparePassword = function(passw, cb) {
   });
 };
 
+UserSchema.statics.findByRatedId = function (_id) {
+  return this.findOne({ ratings: _id });
+};
+
+
+
+UserSchema.statics.findBysuggestion =async function (username) {
+  let fav;
+  let user=[];
+  let name=await this.findOne({ username: username }).then(
+    temp => fav=temp.favourites)
+  let temp= await this.find({favourites:{ $in: fav}}).then(
+    temp => temp.map( each=> user.push(each.username)))
+  return user;
+};
+
 // 
 
 export default mongoose.model('User', UserSchema);

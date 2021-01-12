@@ -64,7 +64,7 @@ router.post('/', async (req, res, next) => {
     }
   } else {
     const user = await User.findByUserName(req.body.username).catch(next);
-    if (!user) return res.status(401).json({
+    if (!user) return res.status(400).json({
       code: 401,
       msg: 'Authentication failed. User not found.'
     });
@@ -79,8 +79,8 @@ router.post('/', async (req, res, next) => {
           token: 'BEARER ' + token,
         });
       } else {
-        res.status(401).json({
-          code: 401,
+        res.status(400).json({
+          code: 400,
           msg: 'Authentication failed. Wrong password.'
         });
       }
@@ -109,17 +109,19 @@ router.post('/:userName/favourites', async (req, res, next) => {
     msg: 'failed. movie not found.'
   });
   const user = await User.findByUserName(userName);
-  const favouriteId = await User.findByFavouriteId(movie._id).catch(next);
-  if (!favouriteId) {
-    await user.favourites.push(movie._id);
+  if (!user) {
+    res.status(401).send("user not found")
   }
-  await user.save();
+  if (!(movie._id  in user.favourites)) {
+    await user.favourites.push(movie._id);
+    await user.save();
+  }
   res.status(201).json(user);
 });
 
 router.get('/:userName/favourites', (req, res, next) => {
   const userName = req.params.userName;
-  User.findByUserName(userName).populate('favourites').then(
+  User.findByUserName(userName).populate('favourites').then(  
     user => res.status(201).json(user.favourites)
   ).catch(next);
 });
@@ -163,5 +165,27 @@ router.post('/upload',upload.single('file'),function (req, res, next) {
     msg: 'Successful upload',
   });
 });
+
+router.get('/:userName/recommendMovies', async (req, res, next) => {
+  try {
+    const userName = req.params.userName;
+    let users;
+    await User.findBysuggestion(userName).then(user => users = user);
+    users = users.filter((user) => user != userName);
+    let movies = [];
+    await users.forEach(async (user) => {  
+    await User.findByUserName(user).populate('favourites').then(
+      movie => movies = movies.concat(movie.favourites)
+      )
+  })
+    setTimeout(() => {
+    res.status(201).json(movies);
+    }, 2000);
+  } catch (err) {
+    next(err);
+  }
+});
+
+
 
 export default router;

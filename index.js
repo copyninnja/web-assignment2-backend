@@ -56,8 +56,12 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use(passport.initialize());;
 
-var accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {flags: 'a'});
-app.use(morgan('short', {stream: accessLogStream}));
+var accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {
+  flags: 'a'
+});
+app.use(morgan('short', {
+  stream: accessLogStream
+}));
 
 const port = process.env.PORT;
 
@@ -74,12 +78,13 @@ app.use(session({
 
 
 
-
 app.use('/api/users', usersRouter);
 app.use(errHandler);
 app.use('/api/genres', genreRouter);
 
-app.use('/api/movies', passport.authenticate('jwt', {session: false}), moviesRouter);
+app.use('/api/movies', passport.authenticate('jwt', {
+  session: false
+}), moviesRouter);
 
 app.use('/api/rating', ratingRouter);
 
@@ -87,13 +92,15 @@ app.use('/api/reviews', reviewRouter);
 
 
 
-
-if (process.env.SEED_DB && (process.env.NODE_ENV=='development')) {
-  loadUsers();
-  loadMovies();
-  loadRatings();
-  loadReviews();
+async function load() {
+  if (process.env.SEED_DB && (process.env.NODE_ENV == 'development')) {
+    await loadMovies();
+    await loadUsers();
+    await loadRatings();
+    await loadReviews();
+  }
 }
+load()
 //别忘了!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
 let server = app.listen(port, () => {
   loglevel.info(`Server running at ${port}`);

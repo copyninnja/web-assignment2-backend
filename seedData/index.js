@@ -13,7 +13,7 @@ import {
 } from './rating';
 const users = [{
     'username': 'user1',
-    'password': 'test1'
+    'password': 'test1',
   },
   {
     'username': 'user2',
@@ -25,8 +25,22 @@ const users = [{
 export async function loadUsers() {
   console.log('load user Data');
   try {
+
     await userModel.deleteMany();
     await users.forEach(user => userModel.create(user));
+
+    const movie1 = await movieModel.findByMovieDBId(741067);
+    const movie2 = await movieModel.findByMovieDBId(577922);
+    const movie3 = await movieModel.findByMovieDBId(400160);
+    const movie4 = await movieModel.findByMovieDBId(635302);
+    const user1 = await userModel.findByUserName(users[0].username);
+    const user2 = await userModel.findByUserName(users[1].username);
+    user1.favourites.push(movie1._id);
+    user2.favourites.push(movie2._id);
+    user2.favourites.push(movie3._id);
+    user2.favourites.push(movie4._id);
+    user1.save();
+    user2.save();
     console.info(`${users.length} users were successfully stored.`);
   } catch (err) {
     console.error(`failed to Load user Data: ${err}`);
