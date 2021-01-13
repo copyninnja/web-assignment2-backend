@@ -42,13 +42,15 @@ if (process.env.NODE_ENV === 'test') {
   }
 
   app.use(passport.initialize());;
-
-  if (process.env.SEED_DB && (process.env.NODE_ENV!='test')) {
-    loadUsers();
-    loadMovies();
-    loadRatings();
-    loadReviews();
+  async function load() {
+    if (process.env.SEED_DB && (process.env.NODE_ENV == 'development')) {
+      await loadMovies();
+      await loadUsers();
+      await loadRatings();
+      await loadReviews();
+    }
   }
+  load();
 
 //   var accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {flags: 'a'});
 // app.use(morgan('short', {stream: accessLogStream}));
