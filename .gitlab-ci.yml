@@ -48,10 +48,26 @@ test_api:
 
 staging:
   stage: staging
+  environment:
+    name: production
+    url: unruffled-jackson-964513.netlify.app
   script:
     - npm install
     - npm run build
-  
+  only:
+    - master
+
+staging:
+  stage: staging
+  environment:
+    name: production
+    url: laughing-wescoff-ebc91f.netlify.app
+  script:
+    - npm install
+    - npm run build
+  only:
+    - develop
+   
 delivery:
   stage: delivery
   environment:
