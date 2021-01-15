@@ -47,8 +47,8 @@ test_api:
     - npm test
 
 
-staging:
-  stage: stagin
+stagin:
+  stage: staging
   environment:
     name: deployment
     url: unruffled-jackson-964513.netlify.app
