@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import movieModel from '../movies/movieModel';
 import nodemailer from 'nodemailer';
 import xoauth2 from 'xoauth2';
-import multer from 'multer';
+// import multer from 'multer';
 import fs from 'fs';
 
 const router = express.Router(); // eslint-disable-line
