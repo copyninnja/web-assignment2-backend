@@ -23,6 +23,7 @@ stages:
   - build
   - test
   - staging
+  - stagin
   - delivery
   - deployment
 
@@ -47,7 +48,7 @@ test_api:
 
 
 staging:
-  stage: staging
+  stage: stagin
   environment:
     name: deployment
     url: unruffled-jackson-964513.netlify.app
