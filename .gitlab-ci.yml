@@ -49,7 +49,7 @@ test_api:
 staging:
   stage: staging
   environment:
-    name: production
+    name: deployment
     url: unruffled-jackson-964513.netlify.app
   script:
     - npm install
@@ -82,7 +82,7 @@ delivery:
 deployment:
   stage: deployment
   environment:
-    name: production
+    name: deployment
     url: unruffled-jackson-964513.netlify.app
   only:
     - master
