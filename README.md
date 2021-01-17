@@ -6,6 +6,20 @@ Name: xiaofeng gong
 
  + rating -user can rate a movie(full CURD), the record can be traced in user api and be seen in movie api ratings. Both referencing User and movie objects. (Custom validation using Mongoose)
  + reviews - provide a set of reviews of different movies, user can CURD  the review of a movie.Both referencing User and movie objects. (Custom validation using Mongoose)
+ + Integration - integrated with assignment1
+ + error handling - errorNotification (notifier)
+ + upload - user can upload a file(size limited to 1.6MB) and the backend can store and read file.(based on multer) 
+ + Error handling - better error handling by using notifier
+ + mail - the express can send email to user's email address for verification when authenticating.(based on nodemailer) 
+ + logging - record requests and save in local storage based on morgan
+ + Swagger - API documentation
+ + Advanced authentication - authenticate with email and realize protect routes
+ + xoauth2 - a way to authenticate
+ + Helmet - encrypt the request headers
+ + Moment - manipulate date and time
+ + netlify-lambda - serverless function
+ + hosting - netlify deployment
+ + recommend movies- provide a set of movies recommend according to user's favourite movies based on collaborative filtering
 
 ## Installation Requirements
 
@@ -103,9 +117,14 @@ export const login = (username, password) => {
  + Error handling - better error handling by using notifier
  + mail - the express can send email to user's email address for verification when authenticating.(based on nodemailer) 
  + logging - record requests and save in local storage based on morgan
+ + error handling - errorNotification (notifier)
+ + Swagger - API documentation
  + Helmet - encrypt the request headers
  + Moment - manipulate date and time
- + serverless hosting - netlify deployment
+ + Advanced authentication - authenticate with email and realize protect routes
+ + xoauth2 - a way to authenticate
+ + netlify-lambda - serverless function
+ + hosting - netlify deployment
  + recommend - provide a set of movies recommend according to user's favourite movies based on collaborative filtering
 
 ## Independent learning.

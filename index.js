@@ -16,10 +16,21 @@ import morgan from 'morgan';
 import fs from 'fs';
 import path from 'path';
 import loglevel from 'loglevel';
+import optimizelyExpress from '@optimizely/express';
 
-
+const optimizely = optimizelyExpress.initialize({
+    sdkKey: 'UjThNxuk5yt5MgWiNYWQ7',
+    datafileOptions: {
+      autoUpdate: true,      // Indicates feature flags will be auto-updated based on UI changes 
+      updateInterval: 1*1000 // 1 second in milliseconds
+    },
+    logLevel: 'info',        // Controls console logging. Can be 'debug', 'info', 'warn', or 'error'
+  });
+  
 dotenv.config();
+
 const app = express();
+app.use(optimizely.middleware);
 
 const errHandler = (err, req, res, next) => {
 

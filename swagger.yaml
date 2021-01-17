@@ -92,6 +92,13 @@ paths:
         description: username to filter by
         required: true
         type: string
+      - in: body
+        name: "body"
+        description: "movieId"
+        required: true
+        schema:
+          type: object
+          example: {id: 577922}
       responses:
         "200":
           description: OK
@@ -403,7 +410,33 @@ paths:
           description: "success"
       security:
          - Bearer: []
-         
+  /users/{username}/reviews:
+    get:
+      tags: 
+      - user
+      summary: "get reviews of a movie written by user"
+      description: ""
+      operationId: "getreview"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+        - in: "path"
+          name: username
+          required: true
+          type: string
+      responses:
+        "401":
+          description: "failed. movie not found."
+        "201":
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Movie'
+      security:
+         - Bearer: []       
     
   /users/upload:
     post:
@@ -425,6 +458,34 @@ paths:
       responses:
         "201":
           description: "Successful upload"
+
+  /users/{username}/recommendMovies:
+    get:
+      tags: 
+      - user
+      summary: "get recommend movies by user's favourite"
+      description: ""
+      operationId: "getRecommend"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+        - in: "path"
+          name: username
+          required: true
+          type: string
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Movie'
+        "400":
+          description: Invalid username value
+      security:
+         - Bearer: []
     
     
   /rating:
